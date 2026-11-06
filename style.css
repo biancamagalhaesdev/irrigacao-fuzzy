@@ -1,0 +1,572 @@
+/* =====================================================================
+ * style.css — Aparência do simulador
+ * ---------------------------------------------------------------------
+ * Nada aqui altera cálculos: este arquivo só define cores, tamanhos
+ * e posições. As cores ficam em "variáveis" (--nome) no :root, assim
+ * dá para trocar a paleta inteira mudando poucas linhas.
+ * ===================================================================== */
+
+/* ---------- 1. Paleta e medidas (tema claro) ---------- */
+:root {
+  --fundo: #F2F6F3;          /* página: verde bem claro */
+  --fundo-cartao: #FFFFFF;
+  --fundo-suave: #E7F1EA;    /* destaque leve (regras ativas) */
+  --tinta: #13251B;          /* texto principal */
+  --tinta-suave: #4B6154;    /* texto secundário */
+  --linha: #D3E0D7;          /* bordas e grade */
+
+  --folha: #1E5C3A;          /* verde principal */
+  --folha-forte: #154329;
+  --folha-hover: #1E5C3A;
+  --topo: #154329;
+  --agua: #1C6EA4;           /* azul água */
+  --agua-forte: #0F4C76;
+  --agua-suave: #E4EFF8;
+
+  --erro: #B42318;      --erro-fundo: #FDECEA;
+  --sucesso: #1E6B3C;   --sucesso-fundo: #E3F2E8;
+  --info: #1C5D8C;      --info-fundo: #E3EEF8;
+
+  /* Cores dos conjuntos fuzzy (usadas nos gráficos e nas listas) */
+  --cor-seco: #A4650F;
+  --cor-intermediario: #3B8A53;
+  --cor-umido: #1F6FB0;
+  --cor-baixa: #2B74BD;
+  --cor-media: #6F7D10;
+  --cor-alta: #C2461C;
+  --cor-curto: #3D93C9;
+  --cor-medio: #1D66A6;
+  --cor-longo: #123C66;
+  --cor-agregada: #3B8A53;
+  --cor-agregada-borda: #1E5C3A;
+  --cor-centroide: #C2410C;
+
+  --raio: 10px;
+  --raio-grande: 16px;
+  --fonte: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color-scheme: light;
+}
+
+/* ---------- 2. Tema escuro (segue a preferência do sistema) ---------- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fundo: #0D1611;
+    --fundo-cartao: #142019;
+    --fundo-suave: #1B2C22;
+    --tinta: #E3EDE6;
+    --tinta-suave: #A3B6AA;
+    --linha: #2A3C31;
+    --folha: #79C795;
+    --folha-forte: #2F7D4F;
+    --folha-hover: #3A9160;
+    --topo: #12301F;
+    --agua: #6BB2E6;
+    --agua-forte: #A9D3F3;
+    --agua-suave: #12273A;
+    --erro: #F49A90;      --erro-fundo: #3A1714;
+    --sucesso: #8AD3A3;   --sucesso-fundo: #13301E;
+    --info: #9CCBF0;      --info-fundo: #12283C;
+    --cor-seco: #E3A94F;
+    --cor-intermediario: #74C48C;
+    --cor-umido: #6BB2E6;
+    --cor-baixa: #7FB7EE;
+    --cor-media: #C9C45A;
+    --cor-alta: #F08A5D;
+    --cor-curto: #A6DAF5;
+    --cor-medio: #5EA9E6;
+    --cor-longo: #8E9CF4;
+    --cor-agregada: #5DB97A;
+    --cor-agregada-borda: #A6E0B8;
+    --cor-centroide: #F59E5B;
+    color-scheme: dark;
+  }
+}
+
+/* ---------- 3. Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--fonte);
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--tinta);
+  background: var(--fundo);
+}
+
+h1, h2, h3 { line-height: 1.2; margin: 0; }
+h2 { font-size: 1.15rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+a { color: var(--agua); }
+sub { font-size: 0.72em; }
+
+:focus-visible { outline: 3px solid var(--agua); outline-offset: 2px; }
+
+/* ---------- 4. Cabeçalho ---------- */
+.topo {
+  background: var(--topo);
+  color: #FFFFFF;
+}
+.topo-conteudo {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 22px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.marca { display: flex; align-items: flex-start; gap: 14px; max-width: 760px; }
+.marca-gota { width: 40px; height: 40px; flex: none; margin-top: 2px; }
+.marca-gota path { fill: #8FD0F5; }
+.topo h1 { font-size: clamp(1.4rem, 2.6vw, 1.9rem); font-weight: 700; letter-spacing: -0.01em; }
+.topo p { color: #CFE6D7; margin-top: 4px; max-width: 64ch; }
+
+.link-repo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #FFFFFF;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 10px 16px;
+  border: 1.5px solid rgba(255, 255, 255, 0.55);
+  border-radius: var(--raio);
+}
+.link-repo:hover { background: rgba(255, 255, 255, 0.1); }
+.link-repo svg { width: 18px; height: 18px; fill: currentColor; }
+
+/* ---------- 5. Layout em duas colunas ---------- */
+.painel {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 24px;
+  display: grid;
+  grid-template-columns: minmax(300px, 370px) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.coluna-resultados { display: grid; gap: 20px; min-width: 0; }
+
+@media (max-width: 960px) {
+  .painel { grid-template-columns: 1fr; padding: 16px; gap: 16px; }
+}
+
+.grade-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+@media (max-width: 760px) { .grade-2 { grid-template-columns: 1fr; } }
+
+/* ---------- 6. Coluna de configuração ---------- */
+.coluna-config {
+  background: var(--fundo-cartao);
+  border: 1px solid var(--linha);
+  border-radius: var(--raio-grande);
+  overflow: hidden;
+}
+.bloco-config { padding: 20px; }
+.bloco-config + .bloco-config { border-top: 1px solid var(--linha); }
+.bloco-config h2 { margin-bottom: 14px; }
+
+.campo { margin-bottom: 18px; }
+.campo:last-child { margin-bottom: 0; }
+.campo label { display: flex; justify-content: space-between; gap: 8px; font-weight: 600; margin-bottom: 6px; }
+.faixa { font-weight: 400; color: var(--tinta-suave); font-size: 0.9rem; }
+
+.campo-linha { display: flex; align-items: center; gap: 8px; }
+.campo input[type="text"], .campo select, .regra-config select, .detalhe-escolha select {
+  font: inherit;
+  color: var(--tinta);
+  background: var(--fundo-cartao);
+  border: 1.5px solid var(--linha);
+  border-radius: var(--raio);
+  padding: 9px 12px;
+}
+.campo input[type="text"] {
+  width: 100%;
+  font-size: 1.15rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.campo select { width: 100%; }
+.campo input[type="text"]:focus, .campo select:focus { border-color: var(--agua); }
+.sufixo { color: var(--tinta-suave); font-weight: 600; min-width: 2.2em; }
+
+input[type="range"] { width: 100%; margin-top: 10px; accent-color: var(--folha); }
+
+.invalido { border-color: var(--erro) !important; background: var(--erro-fundo) !important; }
+.erro { color: var(--erro); font-size: 0.9rem; margin-top: 6px; }
+.erro:empty { display: none; }
+
+/* Botões */
+.acoes { display: grid; gap: 10px; }
+.botao {
+  font: inherit;
+  font-weight: 700;
+  font-size: 1rem;
+  border-radius: var(--raio);
+  padding: 12px 16px;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+}
+.botao.primario { background: var(--folha-forte); color: #FFFFFF; }
+.botao.primario:hover { background: var(--folha-hover); }
+.botao.secundario { background: var(--agua-suave); color: var(--agua-forte); border-color: var(--agua); }
+.botao.secundario:hover { background: var(--fundo-cartao); }
+.botao.terciario { background: transparent; color: var(--tinta-suave); border-color: var(--linha); }
+.botao.terciario:hover { color: var(--tinta); border-color: var(--tinta-suave); }
+
+.dica { font-size: 0.88rem; color: var(--tinta-suave); text-align: center; margin: -2px 0 4px; }
+
+.aviso { font-size: 0.92rem; border-radius: var(--raio); padding: 10px 12px; }
+.aviso:empty { display: none; }
+.aviso-info { background: var(--info-fundo); color: var(--info); }
+.aviso-sucesso { background: var(--sucesso-fundo); color: var(--sucesso); }
+.aviso-erro { background: var(--erro-fundo); color: var(--erro); }
+
+/* Lista de regras */
+.nota { color: var(--tinta-suave); font-size: 0.9rem; margin: -6px 0 12px; }
+.lista-regras { display: grid; gap: 6px; }
+.regra-config {
+  display: grid;
+  grid-template-columns: 2.2em minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px 10px;
+  padding: 7px 8px;
+  border-radius: var(--raio);
+}
+.regra-config:nth-child(odd) { background: var(--fundo); }
+.regra-id { font-weight: 700; color: var(--folha); }
+.regra-texto { font-size: 0.88rem; line-height: 1.35; }
+.regra-config select { padding: 6px 8px; font-size: 0.92rem; }
+.regra-alterada {
+  display: none;
+  grid-column: 2 / 4;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--cor-centroide);
+}
+.regra-config.alterada { outline: 1.5px dashed var(--cor-centroide); }
+.regra-config.alterada .regra-alterada { display: block; }
+
+/* ---------- 7. Resultado principal (medidor de água) ---------- */
+.resultado {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 24px;
+  align-items: center;
+  padding: 24px 28px;
+  border-radius: var(--raio-grande);
+  background: var(--agua-suave);
+  border: 1.5px solid var(--agua);
+}
+.resultado-rotulo { font-weight: 600; color: var(--agua-forte); }
+.resultado-valor {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: clamp(3rem, 7vw, 4.6rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--agua-forte);
+  font-variant-numeric: tabular-nums;
+  margin: 4px 0 6px;
+}
+.resultado-unidade { font-size: 0.4em; font-weight: 600; letter-spacing: 0; }
+.resultado-detalhe { color: var(--tinta); font-size: 0.95rem; }
+.resultado-contexto { color: var(--tinta-suave); font-size: 0.9rem; margin-top: 4px; }
+.resultado.sem-saida { border-color: var(--erro); background: var(--erro-fundo); }
+
+.medidor-trilho {
+  position: relative;
+  height: 64px;
+  border-radius: 12px;
+  border: 2px solid var(--agua);
+  background:
+    repeating-linear-gradient(to right, transparent 0, transparent calc(100% / 6 - 1px),
+                              var(--linha) calc(100% / 6 - 1px), var(--linha) calc(100% / 6));
+  background-color: var(--fundo-cartao);
+  overflow: hidden;
+}
+.medidor-agua {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  background: var(--agua);
+  transition: width 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.medidor-agua::after {               /* "lâmina d'água" mais clara na borda */
+  content: "";
+  position: absolute;
+  top: 0; right: 0; bottom: 0;
+  width: 6px;
+  background: #9FD3F3;
+  opacity: 0.8;
+}
+.medidor-escala {
+  position: relative;
+  height: 1.5em;
+  font-size: 0.85rem;
+  color: var(--tinta-suave);
+  margin-top: 6px;
+  font-variant-numeric: tabular-nums;
+}
+.medidor-escala span { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; }
+.medidor-escala span:nth-child(1) { left: 0; transform: none; }
+.medidor-escala span:nth-child(2) { left: 33.333%; }
+.medidor-escala span:nth-child(3) { left: 66.667%; }
+.medidor-escala span:nth-child(4) { left: 100%; transform: translateX(-100%); }
+@media (max-width: 640px) {
+  .resultado { grid-template-columns: 1fr; padding: 20px; }
+}
+
+/* ---------- 8. Indicador das etapas ---------- */
+.etapas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+.etapas li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: var(--raio);
+  background: var(--fundo-cartao);
+  border: 1.5px solid var(--linha);
+  color: var(--tinta-suave);
+  font-size: 0.9rem;
+  min-width: 0;
+}
+.etapas-num {
+  flex: none;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  border: 1.5px solid currentColor;
+}
+.etapas-nome { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.etapas li.proxima { border-color: var(--agua); color: var(--agua-forte); }
+.etapas li.concluida { background: var(--fundo-suave); border-color: var(--folha); color: var(--folha); font-weight: 600; }
+.etapas li.concluida .etapas-num { background: var(--folha-forte); border-color: var(--folha-forte); color: #FFFFFF; }
+@media (max-width: 860px) {
+  .etapas li { justify-content: center; padding: 8px 4px; }
+  .etapas-nome {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap;
+  }
+}
+
+/* ---------- 9. Cartões das etapas ---------- */
+.cartao {
+  background: var(--fundo-cartao);
+  border: 1px solid var(--linha);
+  border-radius: var(--raio-grande);
+  padding: 22px;
+  min-width: 0;
+}
+.etapa-cabecalho {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: start;
+  margin-bottom: 16px;
+}
+.etapa-cabecalho p, .saida-cabecalho p { color: var(--tinta-suave); font-size: 0.92rem; margin-top: 3px; }
+.saida-cabecalho { margin-bottom: 12px; }
+.etapa-numero {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  font-weight: 700;
+  color: var(--folha);
+  border: 2px solid var(--folha);
+}
+.etapa.concluida .etapa-numero { background: var(--folha-forte); border-color: var(--folha-forte); color: #FFFFFF; }
+.etapa-status {
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--fundo);
+  color: var(--tinta-suave);
+  white-space: nowrap;
+}
+.etapa.concluida .etapa-status { background: var(--sucesso-fundo); color: var(--sucesso); }
+@media (max-width: 560px) {
+  .cartao { padding: 18px 16px; }
+  .etapa-cabecalho { grid-template-columns: auto minmax(0, 1fr); }
+  .etapa-status { grid-column: 2; justify-self: start; }
+}
+
+.subetapas { margin-top: 20px; }
+.subetapa { border-top: 1px solid var(--linha); padding-top: 18px; min-width: 0; }
+.subetapa p { font-size: 0.92rem; }
+.subetapa .nota { margin: 6px 0 0; }
+
+.vazio { color: var(--tinta-suave); font-style: italic; }
+.observacao { color: var(--tinta-suave); font-size: 0.88rem; margin-top: 12px; }
+.resumo { margin-bottom: 12px; }
+.alerta { background: var(--erro-fundo); color: var(--erro); padding: 12px; border-radius: var(--raio); }
+
+/* Figuras e listas de graus */
+.figura { margin: 0; min-width: 0; }
+.graus { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 4px; }
+.grau {
+  display: grid;
+  grid-template-columns: 14px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--fundo);
+}
+.grau-valor { font-weight: 700; font-variant-numeric: tabular-nums; }
+.grau.zero .grau-valor { color: var(--tinta-suave); font-weight: 400; }
+.grau.positivo { background: var(--fundo-suave); }
+.amostra-cor { width: 14px; height: 14px; border-radius: 4px; background: var(--cor); display: inline-block; flex: none; }
+
+/* Tabela das regras */
+.tabela-rolagem { overflow-x: auto; }
+.tabela-regras, .tabela-pontos { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+.tabela-regras th, .tabela-regras td, .tabela-pontos th, .tabela-pontos td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--linha);
+  white-space: nowrap;
+}
+.tabela-regras thead th, .tabela-pontos thead th { color: var(--tinta-suave); font-weight: 600; font-size: 0.85rem; }
+.tabela-regras .num, .tabela-pontos .num { font-variant-numeric: tabular-nums; }
+.tabela-regras tbody tr { cursor: pointer; }
+.tabela-regras tbody tr:hover { background: var(--fundo); }
+.tabela-regras tr.ativa { background: var(--fundo-suave); }
+.tabela-regras tr.ativa th { color: var(--folha); }
+.tabela-regras tr.inativa { color: var(--tinta-suave); }
+.tabela-regras tr.selecionada { outline: 2px solid var(--agua); outline-offset: -2px; }
+.selo { font-size: 0.78rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+.selo-ativa { background: var(--folha-forte); color: #FFFFFF; }
+.selo-inativa { background: var(--fundo); color: var(--tinta-suave); }
+
+.tabela-pontos { max-width: 320px; margin-top: 10px; }
+.tabela-pontos caption { text-align: left; font-weight: 600; margin-bottom: 4px; }
+
+/* Detalhe da implicação */
+.detalhe-escolha { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+.detalhe-escolha label { font-weight: 600; }
+.legenda-texto { color: var(--tinta-suave); font-size: 0.9rem; margin-top: 6px; }
+.lista-recortes {
+  list-style: none;
+  padding: 0;
+  margin: 14px 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 4px 16px;
+  font-size: 0.9rem;
+}
+.lista-recortes .contribui { font-weight: 600; }
+.lista-recortes .nao-contribui { color: var(--tinta-suave); }
+
+/* Contas da defuzzificação */
+.contas { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 14px; margin: 0; font-size: 0.92rem; }
+.contas dt { color: var(--tinta-suave); }
+.contas dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.contas .destaque { color: var(--agua-forte); font-size: 1.1rem; }
+
+/* Legenda do gráfico de saída */
+.legenda {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  font-size: 0.88rem;
+  color: var(--tinta-suave);
+}
+.legenda li { display: flex; align-items: center; gap: 8px; }
+.legenda .amostra { width: 28px; height: 12px; flex: none; }
+.amostra-agregada { background: var(--cor-agregada); opacity: 0.6; }
+.linha-original-amostra { stroke: var(--tinta-suave); stroke-width: 2; stroke-dasharray: 5 4; }
+
+/* Registro */
+.log { margin: 12px 0 0; padding-left: 1.3em; display: grid; gap: 8px; font-size: 0.92rem; }
+.log ul { margin: 4px 0 0; padding-left: 1.2em; color: var(--tinta-suave); }
+.log-vazio { color: var(--tinta-suave); font-style: italic; list-style: none; margin-left: -1.3em; }
+
+/* ---------- 10. Gráficos SVG ---------- */
+.grafico { width: 100%; min-width: 0; }
+.grafico svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+.grafico .grade { stroke: var(--linha); stroke-width: 1; }
+.grafico .eixo { stroke: var(--tinta-suave); stroke-width: 1.3; }
+.grafico .marca { stroke: var(--tinta-suave); stroke-width: 1; }
+.grafico .marca-texto { fill: var(--tinta-suave); font-size: 12px; font-variant-numeric: tabular-nums; }
+.grafico .titulo-eixo { fill: var(--tinta); font-size: 12.5px; font-weight: 600; }
+
+.grafico .linha-conj { fill: none; stroke: var(--cor); stroke-width: 2.6; stroke-linejoin: round; }
+.grafico .rotulo-conj { fill: var(--cor); font-size: 13px; font-weight: 700; }
+.grafico .marcador { stroke: var(--tinta); stroke-width: 1.6; stroke-dasharray: 5 4; }
+.grafico .rotulo-marcador { fill: var(--tinta); font-size: 13px; font-weight: 700; }
+.grafico .ponto { fill: var(--cor); stroke: var(--fundo-cartao); stroke-width: 2; }
+
+.grafico .linha-original { fill: none; stroke: var(--cor); stroke-width: 1.6; stroke-dasharray: 6 5; }
+.grafico .area-recorte { fill: var(--cor); fill-opacity: 0.14; }
+.grafico .area-recorte.forte { fill-opacity: 0.3; }
+.grafico .linha-recorte { fill: none; stroke: var(--cor); stroke-width: 2.4; stroke-linejoin: round; }
+.grafico .area-agregada { fill: var(--cor-agregada); fill-opacity: 0.32; }
+.grafico .contorno-agregada { fill: none; stroke: var(--cor-agregada-borda); stroke-width: 3; stroke-linejoin: round; }
+.grafico .linha-altura { stroke: var(--tinta-suave); stroke-width: 1.2; stroke-dasharray: 3 4; }
+.grafico .rotulo-altura { fill: var(--tinta); font-size: 13px; font-weight: 700; }
+.grafico .texto-vazio { fill: var(--tinta-suave); font-size: 13px; }
+.linha-centroide { stroke: var(--cor-centroide); stroke-width: 2.6; }
+.grafico .rotulo-centroide { fill: var(--cor-centroide); font-size: 13.5px; font-weight: 700; }
+
+/* "Contorno" da cor do fundo atrás de textos que ficam sobre linhas */
+.halo { paint-order: stroke; stroke: var(--fundo-cartao); stroke-width: 5px; stroke-linejoin: round; }
+
+/* Cada conjunto recebe sua cor através da variável --cor */
+.conj-umidade-0 { --cor: var(--cor-seco); }
+.conj-umidade-1 { --cor: var(--cor-intermediario); }
+.conj-umidade-2 { --cor: var(--cor-umido); }
+.conj-temperatura-0 { --cor: var(--cor-baixa); }
+.conj-temperatura-1 { --cor: var(--cor-media); }
+.conj-temperatura-2 { --cor: var(--cor-alta); }
+.conj-tempo-0 { --cor: var(--cor-curto); }
+.conj-tempo-1 { --cor: var(--cor-medio); }
+.conj-tempo-2 { --cor: var(--cor-longo); }
+
+/* ---------- 11. Rodapé ---------- */
+.rodape {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 8px 24px 32px;
+  color: var(--tinta-suave);
+  font-size: 0.88rem;
+  display: grid;
+  gap: 4px;
+}
+
+/* ---------- 12. Página de testes ---------- */
+.pagina-testes .nota { margin: 4px 0 0; }
+.pagina-testes .testes { max-width: 1100px; margin: 0 auto; padding: 24px; display: grid; gap: 20px; }
+.resumo-testes { font-size: 1.15rem; font-weight: 700; }
+.resumo-testes.ok { color: var(--sucesso); }
+.resumo-testes.falha { color: var(--erro); }
+.tabela-testes { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin-top: 12px; }
+.tabela-testes th, .tabela-testes td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--linha); vertical-align: top; }
+.tabela-testes thead th { color: var(--tinta-suave); font-weight: 600; }
+.tabela-testes td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.passou { color: var(--sucesso); font-weight: 700; }
+.falhou { color: var(--erro); font-weight: 700; }
+.roteiro { margin: 10px 0 0; padding-left: 1.3em; display: grid; gap: 6px; }
+
+/* ---------- 13. Movimento reduzido ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .medidor-agua { transition: none; }
+}

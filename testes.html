@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Testes automáticos | Simulador de irrigação fuzzy</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C11 10 7 14.5 7 19.5a9 9 0 0 0 18 0C25 14.5 21 10 16 3z' fill='%231C6EA4'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="pagina-testes">
+
+  <header class="topo">
+    <div class="topo-conteudo">
+      <div class="marca">
+        <svg class="marca-gota" viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M16 3C11 10 7 14.5 7 19.5a9 9 0 0 0 18 0C25 14.5 21 10 16 3z"/>
+        </svg>
+        <div>
+          <h1>Testes automáticos</h1>
+          <p>Cada linha executa agora o arquivo fuzzy.js e compara o valor obtido com o valor do enunciado (seção 6).</p>
+        </div>
+      </div>
+      <a class="link-repo" href="index.html">Voltar ao simulador</a>
+    </div>
+  </header>
+
+  <main class="testes">
+    <section class="cartao">
+      <p class="resumo-testes" id="resumo-testes">Executando os testes…</p>
+      <p class="nota" id="data-testes"></p>
+      <p class="nota">Tolerâncias do enunciado: 0,000001 para pertinências e ativações; 0,01 minuto para os tempos de referência.</p>
+    </section>
+
+    <div id="lista-testes"></div>
+
+    <section class="cartao">
+      <h2>Roteiro de verificação manual da interface</h2>
+      <p class="nota">Estes itens dependem de cliques na tela principal e devem ser conferidos no simulador.</p>
+      <ol class="roteiro">
+        <li>Ao abrir o simulador, os campos mostram U = 35 %, T = 30 °C, Δz = 0,1 e as nove regras padrão.</li>
+        <li>Calcular mostra 16,79 min, as linhas verticais em 35 % e 30 °C e destaca R2, R3, R5 e R6.</li>
+        <li>Avançar etapa cinco vezes percorre fuzzificação, regras, implicação, agregação e defuzzificação, chegando aos mesmos 16,79 min.</li>
+        <li>U = −1, U = 101, T = 9, T = 41, campo vazio ou “abc” mostram mensagem, bloqueiam o cálculo e mantêm o valor digitado.</li>
+        <li>Mudar qualquer campo, regra ou passo depois de calcular apaga os resultados e reinicia as etapas.</li>
+        <li>Clicar em uma linha da tabela de regras mostra, na etapa 3, o consequente original e o recorte da regra.</li>
+        <li>Com todas as regras em “curto”, U = 50 % e T = 25 °C, o resultado é 5,00 min.</li>
+        <li>Restaurar padrão volta entradas, regras e passo aos valores iniciais e limpa os resultados; Calcular dá 16,79 min.</li>
+        <li>O link “Código-fonte no GitHub” abre o repositório público.</li>
+      </ol>
+    </section>
+  </main>
+
+  <script src="js/fuzzy.js"></script>
+  <script src="js/testes.js"></script>
+</body>
+</html>
