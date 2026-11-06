@@ -13,7 +13,7 @@ Atividade prática da disciplina de Inteligência Artificial, Universidade Feder
 
 ## Links
 
-- Aplicação publicada (GitHub Pages): `[https://SEU-USUARIO.github.io/irrigacao-fuzzy/]` 
+- Aplicação publicada (GitHub Pages): `https://biancamagalhaesdev.github.io/irrigacao-fuzzy/index.html` 
 - Repositório público: `https://github.com/biancamagalhaesdev/irrigacao-fuzzy` 
 - Página de testes automáticos: `https://biancamagalhaesdev.github.io/irrigacao-fuzzy/testes.html` 
 
