@@ -1,19 +1,6 @@
-/* =====================================================================
- * testes.js — Testes automáticos do motor fuzzy (seção 6 do enunciado)
- * ---------------------------------------------------------------------
- * Cada verificação compara um valor OBTIDO (calculado agora pelo
- * fuzzy.js) com o valor ESPERADO do enunciado, usando as tolerâncias
- * do PDF: 0,000001 para pertinências/ativações e 0,01 min para tempos.
- * Nada aqui é escrito "à mão": todo resultado vem de uma execução real.
- * ===================================================================== */
 
 const TOL_GRAU = 0.000001;   // pertinências e ativações
 const TOL_TEMPO = 0.01;      // tempos de referência (minutos)
-
-/* Centroide contínuo do teste 6.3, calculado por integração exata:
- *   numerador   = ∫0^7,5 z·(z/15) dz + ∫7,5^30 z·0,5 dz = 9,375 + 210,9375 = 220,3125
- *   denominador = ∫0^7,5 (z/15) dz   + ∫7,5^30 0,5 dz   = 1,875 + 11,25   = 13,125
- *   z* = 220,3125 / 13,125 = 16,785714...                                   */
 const CENTROIDE_CONTINUO = 220.3125 / 13.125;
 
 const Testes = {
@@ -25,7 +12,6 @@ const Testes = {
     Testes.grupos.push(Testes.atual);
   },
 
-  /* Compara números com tolerância. */
   numero: function (descricao, obtido, esperado, tolerancia, casas) {
     const diferenca = Math.abs(obtido - esperado);
     const passou = Number.isFinite(obtido) && diferenca <= tolerancia;
@@ -41,7 +27,6 @@ const Testes = {
     });
   },
 
-  /* Verifica uma condição verdadeira/falsa. */
   condicao: function (descricao, passou, esperado, obtido) {
     Testes.atual.casos.push({
       descricao: descricao, esperado: esperado, obtido: obtido,
@@ -50,7 +35,6 @@ const Testes = {
   }
 };
 
-/* ---------- utilidades ---------- */
 function regrasPadrao() { return Fuzzy.copiarRegrasPadrao(); }
 
 function ativacoes(resultado) {
@@ -59,7 +43,6 @@ function ativacoes(resultado) {
   return mapa;
 }
 
-/* Maior diferença entre duas funções em uma grade fina de z. */
 function maiorDiferenca(f, g) {
   let maior = 0;
   for (let i = 0; i <= 3000; i++) {
@@ -68,10 +51,6 @@ function maiorDiferenca(f, g) {
   }
   return maior;
 }
-
-/* =====================================================================
- * 6.1 Pertinências e extremos
- * ===================================================================== */
 Testes.grupo("6.1 Pertinências e extremos", "Graus de pertinência para U = 35 %, T = 30 °C e para os extremos dos domínios.");
 
 (function () {
@@ -98,7 +77,6 @@ Testes.grupo("6.1 Pertinências e extremos", "Graus de pertinência para U = 35 
   Testes.numero("Saída: μcurto(0)", Fuzzy.pertinencia(0, Fuzzy.buscarConjunto("tempo", "curto").params), 1, TOL_GRAU);
   Testes.numero("Saída: μlongo(30)", Fuzzy.pertinencia(30, Fuzzy.buscarConjunto("tempo", "longo").params), 1, TOL_GRAU);
 
-  // Nenhuma divisão por zero: todos os valores finitos e dentro de [0, 1].
   let todosValidos = true;
   ["umidade", "temperatura", "tempo"].forEach(function (variavel) {
     const dominio = Fuzzy.DOMINIOS[variavel];
@@ -114,9 +92,6 @@ Testes.grupo("6.1 Pertinências e extremos", "Graus de pertinência para U = 35 
                   "todas válidas", todosValidos ? "todas válidas" : "há valor inválido");
 })();
 
-/* =====================================================================
- * 6.2 Ativação de uma única regra
- * ===================================================================== */
 Testes.grupo("6.2 Ativação de uma única regra", "Base padrão, Δz = 0,1. A saída agregada deve ser o conjunto consequente completo.");
 
 [
@@ -143,9 +118,6 @@ Testes.grupo("6.2 Ativação de uma única regra", "Base padrão, Δz = 0,1. A s
   Testes.numero(rotulo + "tempo z* (min)", r.defuzzificacao.centroide, caso.tempo, TOL_TEMPO, 2);
 });
 
-/* =====================================================================
- * 6.3 Inferência completa com sobreposição
- * ===================================================================== */
 Testes.grupo("6.3 Inferência com sobreposição", "U = 35 %, T = 30 °C, base padrão, Δz = 0,1.");
 
 (function () {
@@ -176,13 +148,9 @@ Testes.grupo("6.3 Inferência com sobreposição", "U = 35 %, T = 30 °C, base p
   Testes.condicao("Valor exibido na tela", exibido === "16,79", "16,79", exibido);
 })();
 
-/* =====================================================================
- * 6.4 Simetria, alteração de regras e precisão
- * ===================================================================== */
 Testes.grupo("6.4 Simetria, alteração de regras e precisão", "Inclui a troca de todos os consequentes para curto e a variação de Δz.");
 
 (function () {
-  // Simetria
   const r = Fuzzy.inferir(35, 20, regrasPadrao(), 0.1);
   const h = ativacoes(r);
   ["R1", "R2", "R4", "R5"].forEach(function (id) {
@@ -196,7 +164,6 @@ Testes.grupo("6.4 Simetria, alteração de regras e precisão", "Inclui a troca 
   Testes.numero("Agregada constante em 0,5 de 0 a 30 (diferença máxima)", difConstante, 0, TOL_GRAU);
   Testes.numero("U = 35 %, T = 20 °C: tempo z* (min)", r.defuzzificacao.centroide, 15, TOL_TEMPO, 2);
 
-  // Todas as regras com consequente curto
   const todasCurto = regrasPadrao().map(function (regra) {
     regra.consequente = "curto";
     return regra;
@@ -205,7 +172,6 @@ Testes.grupo("6.4 Simetria, alteração de regras e precisão", "Inclui a troca 
   Testes.numero("Todas as regras = curto, U = 50 %, T = 25 °C: tempo z* (min)",
                 rCurto.defuzzificacao.centroide, 5, TOL_TEMPO, 2);
 
-  // Restaurar padrão: a cópia alterada não muda a base original
   const intacta = Fuzzy.REGRAS_PADRAO.every(function (regra, i) {
     return regra.consequente === ["medio", "longo", "longo", "curto", "medio", "longo", "curto", "curto", "curto"][i];
   });
@@ -215,7 +181,6 @@ Testes.grupo("6.4 Simetria, alteração de regras e precisão", "Inclui a troca 
   const exibido = Fuzzy.formatar(rRestaurado.defuzzificacao.centroide, 2);
   Testes.condicao("Depois de restaurar: U = 35 %, T = 30 °C", exibido === "16,79", "16,79 min", exibido + " min");
 
-  // Precisão em função de Δz
   const referencias = [[0.1, 16.785683], [0.05, 16.785706], [0.01, 16.785714]];
   const erros = [];
   referencias.forEach(function (par) {
@@ -230,9 +195,6 @@ Testes.grupo("6.4 Simetria, alteração de regras e precisão", "Inclui a troca 
                   erros.map(function (e) { return e.toExponential(2).replace(".", ","); }).join(" > "));
 })();
 
-/* =====================================================================
- * 6.5 Validação e determinismo
- * ===================================================================== */
 Testes.grupo("6.5 Validação e determinismo", "Entradas inválidas são recusadas sem ajuste; a mesma configuração gera os mesmos números.");
 
 (function () {
@@ -263,14 +225,12 @@ Testes.grupo("6.5 Validação e determinismo", "Entradas inválidas são recusad
   try { Fuzzy.inferir(101, 30, regrasPadrao(), 0.1); } catch (e) { lancouErro = true; }
   Testes.condicao("O motor também recusa U = 101 diretamente", lancouErro, "erro", lancouErro ? "erro" : "calculou");
 
-  // Determinismo
   const a = Fuzzy.inferir(35, 30, regrasPadrao(), 0.1);
   const b = Fuzzy.inferir(35, 30, regrasPadrao(), 0.1);
   Testes.condicao("Duas execuções iguais produzem resultados idênticos",
                   JSON.stringify(a) === JSON.stringify(b), "idênticos",
                   JSON.stringify(a) === JSON.stringify(b) ? "idênticos" : "diferentes");
 
-  // Etapa por etapa (como o botão Avançar etapa) x inferência completa (Calcular)
   const f = Fuzzy.fuzzificar(35, 30);
   const av = Fuzzy.avaliarRegras(f, regrasPadrao());
   const rc = Fuzzy.implicar(av);
@@ -279,13 +239,11 @@ Testes.grupo("6.5 Validação e determinismo", "Entradas inválidas são recusad
   Testes.condicao("Etapa por etapa = Calcular (centroide bit a bit)",
                   df.centroide === a.defuzzificacao.centroide, String(a.defuzzificacao.centroide), String(df.centroide));
 
-  // Denominador zero
   const vazio = Fuzzy.defuzzificar({ contribuintes: [] }, 0.1);
   Testes.condicao("Sem regras ativas: mensagem de saída inválida (não retorna 0)",
                   vazio.valido === false && vazio.centroide === null && vazio.mensagem.length > 0,
                   "sem saída válida", vazio.valido ? "retornou " + vazio.centroide : "sem saída válida");
 
-  // Com a base completa e entradas válidas, o denominador nunca é zero
   let sempreValido = true, combinacoes = 0;
   for (let U = 0; U <= 100; U += 5) {
     for (let T = 10; T <= 40; T += 2.5) {
@@ -297,9 +255,6 @@ Testes.grupo("6.5 Validação e determinismo", "Entradas inválidas são recusad
                   "todas válidas", sempreValido ? "todas válidas" : "há denominador zero");
 })();
 
-/* =====================================================================
- * Exibição dos resultados na página
- * ===================================================================== */
 (function mostrar() {
   let total = 0, aprovados = 0;
   const falhas = [];
@@ -328,7 +283,6 @@ Testes.grupo("6.5 Validação e determinismo", "Entradas inválidas são recusad
   document.getElementById("data-testes").textContent =
     "Executado em " + new Date().toLocaleString("pt-BR") + " neste navegador.";
 
-  // Disponível no console do navegador (F12) para conferência.
   window.RESULTADO_TESTES = { total: total, aprovados: aprovados, falhas: falhas };
   console.log("Testes: " + aprovados + "/" + total, falhas);
 })();
