@@ -8,14 +8,17 @@ Atividade prática da disciplina de Inteligência Artificial, Universidade Feder
 
 | Nome completo | Matrícula |
 |---|---|
-| BIANCA DA SILVA MAGALHÃES PINHEIRO | 20249012612 |
+| (preencher) | (preencher) |
+| (preencher) | (preencher) |
+| (preencher) | (preencher) |
 
+O trabalho pode ser feito por até três estudantes. Apague as linhas que não forem usadas.
 
 ## Links
 
-- Aplicação publicada (GitHub Pages): `https://biancamagalhaesdev.github.io/irrigacao-fuzzy/index.html` 
-- Repositório público: `https://github.com/biancamagalhaesdev/irrigacao-fuzzy` 
-- Página de testes automáticos: `https://biancamagalhaesdev.github.io/irrigacao-fuzzy/testes.html` 
+- Aplicação publicada (GitHub Pages): `https://SEU-USUARIO.github.io/irrigacao-fuzzy/` (substituir)
+- Repositório público: `https://github.com/SEU-USUARIO/irrigacao-fuzzy` (substituir)
+- Página de testes automáticos: `https://SEU-USUARIO.github.io/irrigacao-fuzzy/testes.html` (substituir)
 
 ## Objetivo
 
@@ -90,8 +93,6 @@ Nenhum valor é arredondado durante os cálculos; o arredondamento acontece some
 
 Nenhuma biblioteca JavaScript foi usada. Os gráficos são desenhados em SVG pelo arquivo `js/graficos.js`, escrito pelo grupo.
 
-A página carrega a fonte tipográfica Public Sans do Google Fonts apenas por aparência. Se ela não carregar, o navegador usa a fonte do sistema e nada muda no funcionamento.
-
 ## Estrutura dos arquivos
 
 ```
@@ -100,7 +101,7 @@ irrigacao-fuzzy/
 ├── testes.html       página de testes automáticos
 ├── README.md         este documento
 ├── css/
-│   └── style.css     aparência (cores, layout, responsividade)
+│   └── style.css     aparência (cores e layout)
 └── js/
     ├── fuzzy.js      motor Mamdani: conjuntos, regras, cinco etapas e validação
     ├── graficos.js   gráficos em SVG
