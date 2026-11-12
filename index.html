@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simulador de irrigação fuzzy</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header>
+    <h1>Simulador de irrigação fuzzy</h1>
+    <p>Sistema de inferência fuzzy (Mamdani) que calcula o tempo de irrigação de um jardim a partir da umidade do solo e da temperatura.</p>
+    <!-- Trocar SEU-USUARIO pelo usuário do GitHub. Se esquecer, o interface.js
+         monta o link sozinho quando a página estiver em SEU-USUARIO.github.io -->
+    <p><a id="link-repositorio" href="https://github.com/SEU-USUARIO/irrigacao-fuzzy" target="_blank" rel="noopener">Código-fonte no GitHub</a></p>
+  </header>
+
+  <main>
+
+    <fieldset>
+      <legend>Entradas</legend>
+      <div class="campos">
+        <div class="campo">
+          <label for="campo-umidade">Umidade do solo (0 a 100 %)</label>
+          <input type="text" id="campo-umidade" inputmode="decimal" autocomplete="off"
+                 value="35" aria-describedby="erro-umidade"> %
+          <input type="range" id="slider-umidade" min="0" max="100" step="1" value="35"
+                 aria-label="Umidade do solo, controle deslizante">
+          <p class="erro" id="erro-umidade" role="alert"></p>
+        </div>
+
+        <div class="campo">
+          <label for="campo-temperatura">Temperatura (10 a 40 °C)</label>
+          <input type="text" id="campo-temperatura" inputmode="decimal" autocomplete="off"
+                 value="30" aria-describedby="erro-temperatura"> °C
+          <input type="range" id="slider-temperatura" min="10" max="40" step="1" value="30"
+                 aria-label="Temperatura, controle deslizante">
+          <p class="erro" id="erro-temperatura" role="alert"></p>
+        </div>
+
+        <div class="campo">
+          <label for="select-passo">Passo de defuzzificação Δz</label>
+          <select id="select-passo" aria-describedby="erro-passo">
+            <option value="0.1" selected>0,1 min (N = 300)</option>
+            <option value="0.05">0,05 min (N = 600)</option>
+            <option value="0.01">0,01 min (N = 3000)</option>
+          </select>
+          <p class="erro" id="erro-passo" role="alert"></p>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Base de regras</legend>
+      <p class="nota">Os antecedentes são fixos. Escolha o consequente de cada regra.</p>
+      <!-- linhas criadas pelo interface.js -->
+      <div id="lista-regras"></div>
+      <p class="erro" id="erro-regras" role="alert"></p>
+    </fieldset>
+
+    <div class="acoes">
+      <button type="button" id="btn-calcular"><b>Calcular</b></button>
+      <button type="button" id="btn-avancar">Avançar etapa</button>
+      <button type="button" id="btn-restaurar">Restaurar padrão</button>
+      <span id="dica-etapa" class="dica">Próxima etapa: 1. Fuzzificação</span>
+    </div>
+    <p id="aviso" class="aviso" role="status" aria-live="polite"></p>
+
+    <div class="resultado" id="cartao-resultado" aria-live="polite">
+      <p class="resultado-linha">Tempo de irrigação: <b><span id="resultado-numero">—</span> min</b></p>
+      <p id="resultado-detalhe">Clique em Calcular ou percorra as etapas com Avançar etapa.</p>
+      <p id="resultado-contexto" class="nota"></p>
+    </div>
+
+    <section class="etapa" id="etapa-1">
+      <h2>1. Fuzzificação <span class="etapa-status" id="status-1">(pendente)</span></h2>
+      <p>Grau de pertinência de cada entrada em cada conjunto.</p>
+      <div class="grade-2">
+        <div>
+          <div class="grafico" id="grafico-umidade"></div>
+          <ul class="graus" id="graus-umidade"></ul>
+        </div>
+        <div>
+          <div class="grafico" id="grafico-temperatura"></div>
+          <ul class="graus" id="graus-temperatura"></ul>
+        </div>
+      </div>
+      <p class="nota">Graus de pertinência não são probabilidades e não precisam somar 1.</p>
+    </section>
+
+    <section class="etapa" id="etapa-2">
+      <h2>2. Avaliação das regras <span class="etapa-status" id="status-2">(pendente)</span></h2>
+      <p>Operador E pelo mínimo: h(r) = min(μ<sub>umidade</sub>(U); μ<sub>temperatura</sub>(T)).</p>
+      <div id="conteudo-2"></div>
+    </section>
+
+    <section class="etapa" id="etapa-3">
+      <h2>3. Implicação <span class="etapa-status" id="status-3">(pendente)</span></h2>
+      <p>Cada consequente é recortado na altura da regra: μ<sub>r</sub>(z) = min(h(r); μ<sub>consequente</sub>(z)).</p>
+      <div id="conteudo-3"></div>
+    </section>
+
+    <section id="cartao-saida">
+      <h2>Gráfico de saída</h2>
+      <p>Conjuntos curto, médio e longo, recortes das regras (etapa 3), região agregada (etapa 4) e centroide (etapa 5).</p>
+      <div class="grafico" id="grafico-saida"></div>
+      <ul class="legenda" id="legenda-saida"></ul>
+    </section>
+
+    <section class="etapa" id="etapa-4">
+      <h2>4. Agregação <span class="etapa-status" id="status-4">(pendente)</span></h2>
+      <p>μ<sub>agregada</sub>(z) = máximo entre os conjuntos recortados.</p>
+      <div id="conteudo-4"></div>
+    </section>
+
+    <section class="etapa" id="etapa-5">
+      <h2>5. Defuzzificação <span class="etapa-status" id="status-5">(pendente)</span></h2>
+      <p>Centroide por pontos médios: z* = Σ z(k)·μ(z(k)) / Σ μ(z(k)).</p>
+      <div id="conteudo-5"></div>
+    </section>
+
+    <section id="cartao-log">
+      <h2>Registro das etapas</h2>
+      <ol class="log" id="log"></ol>
+    </section>
+  </main>
+
+  <footer>
+    <p>Trabalho prático de Inteligência Artificial, UFPI, 2026.2. Inferência feita em JavaScript puro, sem bibliotecas de lógica fuzzy.</p>
+    <p><a href="testes.html">Página de testes automáticos</a></p>
+  </footer>
+
+  <script src="js/fuzzy.js"></script>
+  <script src="js/graficos.js"></script>
+  <script src="js/interface.js"></script>
+</body>
+</html>
